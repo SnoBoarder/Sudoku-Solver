@@ -24,7 +24,7 @@ public class AnswerActivity extends AppCompatActivity {
         String displayString = "";
         for (int i = 0; i < cells.length; ++i)
         {
-            if (i % 9 == 0)
+            if (i % MainActivity.TOTAL_COLUMN_CELLS == 0)
             {
                 displayString += "\n";
             }
@@ -33,11 +33,11 @@ public class AnswerActivity extends AppCompatActivity {
 
             if (cell.isEmpty())
             {
-                displayString += "  ";
+                displayString += " _";
             }
             else
             {
-                displayString += cell;
+                displayString += " " + cell;
             }
 
             displayString += "\t";

@@ -6,16 +6,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.GridLayout;
+
+import com.btran.bu.sudokusolver.com.btran.bu.sudokusolver.widget.Cell;
 
 public class MainActivity extends AppCompatActivity
 {
     public final static String EXTRA_CELLS = "com.example.bttra.myfirstapp.CELLS";
 
-    private static final int TOTAL_CELL_INPUTS = 27;
+    private static final int TOTAL_ROW_CELLS = 9;
+    public static final int TOTAL_COLUMN_CELLS = 9;
+
+    private static final int TOTAL_CELL_INPUTS = TOTAL_ROW_CELLS * TOTAL_COLUMN_CELLS;
 
     private static final String CELL_PREFIX = "cell_";
     private static final String CELL_DEF_TYPE = "id";
 
+    private Cell[] _cells;
     private EditText[] _cellInputs;
 
     /**
@@ -39,7 +46,7 @@ public class MainActivity extends AppCompatActivity
             // clear the cell inputs
             for (int i = 0; i < _cellInputs.length; ++i)
             {
-                _cellInputs[i].setText("");
+                _cells[i].reset();
             }
         }
     }
@@ -49,16 +56,24 @@ public class MainActivity extends AppCompatActivity
      */
     private void initialize()
     {
-        // store the references to all the cells for future use
-        // NOTE: The individual "EditText" objects should be generated dynamically to allow for
-        // dynamic Sudoku Boards
-        _cellInputs = new EditText[TOTAL_CELL_INPUTS];
-        for (int i = 0; i < _cellInputs.length; ++i)
+        GridLayout gridLayout = (GridLayout) findViewById(R.id.cellGrid);
+        gridLayout.setRowCount(TOTAL_ROW_CELLS);
+        gridLayout.setColumnCount(TOTAL_COLUMN_CELLS);
+
+        // dynamically create and set the cells within the grid layout
+        // TODO: Consider dynamic Sudoku Boards
+        _cells = new Cell[TOTAL_CELL_INPUTS];
+        for (int row = 0; row < 9; ++row)
         {
-            String cellId = CELL_PREFIX + (i + 1);
-            int resId = getResources().getIdentifier(cellId, CELL_DEF_TYPE, getPackageName());
-            _cellInputs[i] = (EditText) findViewById(resId);
+            for (int col = 0; col < 9; ++col)
+            {
+                Cell cell = new Cell(this);
+                cell.setParentAtRowCol(gridLayout, row, col);
+                _cells[Cell.getIndex(row, col)] = cell;
+            }
         }
+
+        // TODO: Create button event listener dynamically
     }
 
     /**
@@ -74,10 +89,10 @@ public class MainActivity extends AppCompatActivity
         // aggregate all the cell data
         String cellsString = "";
         String[] cells = new String[TOTAL_CELL_INPUTS];
-        for (int i = 0; i < _cellInputs.length; ++i)
+        for (int i = 0; i < _cells.length; ++i)
         {
             // extract the cell value from the EditText and store it
-            cells[i] = _cellInputs[i].getText().toString();
+            cells[i] = _cells[i].getValue();
 
             // keep track of the cell that will be submitted
             if (i > 0)

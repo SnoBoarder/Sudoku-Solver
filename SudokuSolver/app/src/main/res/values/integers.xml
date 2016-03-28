@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="cells_per_row">9</integer>
+    <integer name="cells_per_column">9</integer>
+</resources>
