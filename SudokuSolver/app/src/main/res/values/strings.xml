@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">SudokuSolver</string>
     <string name="send_button">Submit</string>
+    <string name="options_about">About</string>
+    <string name="settings_title">About</string>
+    <string name="settings_message">This app was created by Brian Tran. This option will provide "Settings" in the near future.</string>
+    <string name="settings_positive_button">OK</string>
 </resources>

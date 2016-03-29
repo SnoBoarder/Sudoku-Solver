@@ -3,13 +3,17 @@ package com.btran.bu.sudokusolver;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.btran.bu.sudokusolver.util.SudokuUtil;
 
 public class AnswerActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer);
 
@@ -24,7 +28,7 @@ public class AnswerActivity extends AppCompatActivity {
         String displayString = "";
         for (int i = 0; i < cells.length; ++i)
         {
-            if (i % MainActivity.TOTAL_COLUMN_CELLS == 0)
+            if (i % SudokuUtil.TOTAL_COLUMN_CELLS == 0)
             {
                 displayString += "\n";
             }
@@ -47,5 +51,7 @@ public class AnswerActivity extends AppCompatActivity {
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.answer);
         layout.addView(textView);
+
+        Log.i("Construction", "Displaying Answer Activity");
     }
 }

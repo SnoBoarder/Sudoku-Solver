@@ -1,29 +1,25 @@
 package com.btran.bu.sudokusolver;
 
+import android.app.DialogFragment;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.GridLayout;
 
-import com.btran.bu.sudokusolver.com.btran.bu.sudokusolver.widget.Cell;
+import com.btran.bu.sudokusolver.fragment.SettingsDialogFragment;
+import com.btran.bu.sudokusolver.util.SudokuUtil;
+import com.btran.bu.sudokusolver.widget.Cell;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends ActionBarActivity
 {
-    public final static String EXTRA_CELLS = "com.example.bttra.myfirstapp.CELLS";
-
-    private static final int TOTAL_ROW_CELLS = 9;
-    public static final int TOTAL_COLUMN_CELLS = 9;
-
-    private static final int TOTAL_CELL_INPUTS = TOTAL_ROW_CELLS * TOTAL_COLUMN_CELLS;
-
-    private static final String CELL_PREFIX = "cell_";
-    private static final String CELL_DEF_TYPE = "id";
+    public final static String EXTRA_CELLS = "com.btran.bu.sudokusolver.CELLS";
 
     private Cell[] _cells;
-    private EditText[] _cellInputs;
 
     /**
      * Override onCreate and initialize the Sudoku app.
@@ -43,8 +39,10 @@ public class MainActivity extends AppCompatActivity
         }
         else
         {
+            Log.i("Saved Instance", "Reset board");
+
             // clear the cell inputs
-            for (int i = 0; i < _cellInputs.length; ++i)
+            for (int i = 0; i < _cells.length; ++i)
             {
                 _cells[i].reset();
             }
@@ -56,24 +54,73 @@ public class MainActivity extends AppCompatActivity
      */
     private void initialize()
     {
+        Log.i("Initialize", "Initialize Sudoku Board");
+
         GridLayout gridLayout = (GridLayout) findViewById(R.id.cellGrid);
-        gridLayout.setRowCount(TOTAL_ROW_CELLS);
-        gridLayout.setColumnCount(TOTAL_COLUMN_CELLS);
+        gridLayout.setRowCount(SudokuUtil.TOTAL_ROW_CELLS);
+        gridLayout.setColumnCount(SudokuUtil.TOTAL_COLUMN_CELLS);
 
         // dynamically create and set the cells within the grid layout
         // TODO: Consider dynamic Sudoku Boards
-        _cells = new Cell[TOTAL_CELL_INPUTS];
+        _cells = new Cell[SudokuUtil.TOTAL_CELL_INPUTS];
         for (int row = 0; row < 9; ++row)
         {
             for (int col = 0; col < 9; ++col)
             {
                 Cell cell = new Cell(this);
-                cell.setParentAtRowCol(gridLayout, row, col);
-                _cells[Cell.getIndex(row, col)] = cell;
+                cell.setParentAtRowAndColumn(gridLayout, row, col);
+                _cells[SudokuUtil.getIndex(row, col)] = cell;
             }
         }
 
-        // TODO: Create button event listener dynamically
+        Log.i("Initialize", "Set Submit Button's listener");
+
+        // add the submit button click listener, which will submit the sudoku board
+        Button submitButton = (Button) findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Submitting", "Clicked submit button");
+                submitSudokuBoard(v);
+            }
+        });
+    }
+
+    /**
+     * Create the options menu by inflating a xml defined menu
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        Log.i("Initialize", "Set menu to menu_my layout");
+        getMenuInflater().inflate(R.menu.menu_my, menu);
+        return true;
+    }
+
+    /**
+     * Trigger the options item
+     *
+     * @param item the item that was selected in the options
+     * @return true if it was successful, false otherwise
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.options_about:
+                Log.i("about", "show about fragment");
+
+                // show settings fragment
+                DialogFragment newFragment = new SettingsDialogFragment();
+                newFragment.show(getFragmentManager(), "settings");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -87,28 +134,36 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, AnswerActivity.class);
 
         // aggregate all the cell data
-        String cellsString = "";
-        String[] cells = new String[TOTAL_CELL_INPUTS];
+        String[] cells = new String[SudokuUtil.TOTAL_CELL_INPUTS];
         for (int i = 0; i < _cells.length; ++i)
         {
             // extract the cell value from the EditText and store it
             cells[i] = _cells[i].getValue();
-
-            // keep track of the cell that will be submitted
-            if (i > 0)
-            {
-                // comma separate each item
-                cellsString += ", ";
-            }
-            cellsString += cells[i];
         }
 
-        // log the submission with the string of cells
-        Log.i("Submission", "Submitted Sudoku Board: " + cellsString);
+        logInputSudokuBoard(cells);
 
         // pass the cell data with the intent
         intent.putExtra(EXTRA_CELLS, cells);
 
         startActivity(intent);
+    }
+
+    private void logInputSudokuBoard(String[] cells)
+    {
+        String logValue = "";
+
+        for (int i = 0; i < _cells.length; ++i)
+        {
+            if (i > 0)
+            {
+                // comma separate each item
+                logValue += ", ";
+            }
+            logValue += cells[i];
+        }
+
+        // log the submission with the string of cells
+        Log.i("Submission", "Submitted Sudoku Board: " + logValue);
     }
 }
