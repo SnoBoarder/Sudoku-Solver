@@ -63,9 +63,9 @@ public class MainActivity extends ActionBarActivity
         // dynamically create and set the cells within the grid layout
         // TODO: Consider dynamic Sudoku Boards
         _cells = new Cell[SudokuUtil.TOTAL_CELL_INPUTS];
-        for (int row = 0; row < 9; ++row)
+        for (int row = 0; row < SudokuUtil.TOTAL_ROW_CELLS; ++row)
         {
-            for (int col = 0; col < 9; ++col)
+            for (int col = 0; col < SudokuUtil.TOTAL_COLUMN_CELLS; ++col)
             {
                 Cell cell = new Cell(this);
                 cell.setParentAtRowAndColumn(gridLayout, row, col);
@@ -82,6 +82,16 @@ public class MainActivity extends ActionBarActivity
             public void onClick(View v) {
                 Log.i("Submitting", "Clicked submit button");
                 submitSudokuBoard(v);
+            }
+        });
+
+        // test button to generate a sudoku board for testing
+        Button generateButton = (Button) findViewById(R.id.generateButton);
+        generateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Generating", "Clicked generate button");
+                generateSudokuBoard(v);
             }
         });
     }
@@ -128,7 +138,7 @@ public class MainActivity extends ActionBarActivity
      *
      * @param view
      */
-    public void submitSudokuBoard(View view)
+    private void submitSudokuBoard(View view)
     {
         // Prepare the intent to the AnswerActivity
         Intent intent = new Intent(this, AnswerActivity.class);
@@ -138,7 +148,8 @@ public class MainActivity extends ActionBarActivity
         for (int i = 0; i < _cells.length; ++i)
         {
             // extract the cell value from the EditText and store it
-            cells[i] = _cells[i].getValue();
+            String cell = _cells[i].getValue();
+            cells[i] = cell.isEmpty() ? "0" : cell; // set "0" for empty cells
         }
 
         logInputSudokuBoard(cells);
@@ -165,5 +176,29 @@ public class MainActivity extends ActionBarActivity
 
         // log the submission with the string of cells
         Log.i("Submission", "Submitted Sudoku Board: " + logValue);
+    }
+
+    /**
+     * Generate a sample Sudoku Board for testing
+     *
+     * This is a temporary button purely for testing.
+     *
+     * @param view
+     */
+    private void generateSudokuBoard(View view)
+    {
+        int[] cells = SudokuUtil.getRandomBoard();
+
+        for (int row = 0; row < SudokuUtil.TOTAL_ROW_CELLS; ++row)
+        {
+            for (int col = 0; col < SudokuUtil.TOTAL_COLUMN_CELLS; ++col)
+            {
+                int index = SudokuUtil.getIndex(row, col);
+
+                Cell cell = _cells[index];
+                // set value based on the example sudoku board
+                cell.setValue(String.valueOf(cells[index] == SudokuUtil.EMPTY_CELL ? "" : cells[index]));
+            }
+        }
     }
 }

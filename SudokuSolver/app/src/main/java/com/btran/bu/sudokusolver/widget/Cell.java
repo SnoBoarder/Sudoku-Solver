@@ -85,4 +85,5 @@ public class Cell
     {
         return _text.getText().toString();
     }
+    public void setValue(String value) { _text.setText(value); }
 }
