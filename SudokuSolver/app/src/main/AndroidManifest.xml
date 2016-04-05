@@ -22,6 +22,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.btran.bu.sudokusolver.AnswerActivity" />
         </activity>
+        <activity android:name=".HistoryActivity"></activity>
     </application>
 
 </manifest>

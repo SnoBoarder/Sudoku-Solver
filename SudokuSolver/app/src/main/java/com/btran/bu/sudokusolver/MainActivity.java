@@ -85,6 +85,16 @@ public class MainActivity extends ActionBarActivity
             }
         });
 
+        // add the history button click listener
+        Button historyButton = (Button) findViewById(R.id.historyButton);
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("History", "Clicked history button");
+                startActivity(new Intent(v.getContext(), HistoryActivity.class));
+            }
+        });
+
         // test button to generate a sudoku board for testing
         Button generateButton = (Button) findViewById(R.id.generateButton);
         generateButton.setOnClickListener(new View.OnClickListener() {
@@ -165,14 +175,14 @@ public class MainActivity extends ActionBarActivity
         String logValue = "";
 
         for (int i = 0; i < _cells.length; ++i)
+    {
+        if (i > 0)
         {
-            if (i > 0)
-            {
-                // comma separate each item
-                logValue += ", ";
-            }
-            logValue += cells[i];
+            // comma separate each item
+            logValue += ", ";
         }
+        logValue += cells[i];
+    }
 
         // log the submission with the string of cells
         Log.i("Submission", "Submitted Sudoku Board: " + logValue);

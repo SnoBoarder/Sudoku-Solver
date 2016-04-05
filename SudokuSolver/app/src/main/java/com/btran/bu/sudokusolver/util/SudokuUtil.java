@@ -6,6 +6,8 @@ import java.util.Random;
 
 public class SudokuUtil
 {
+    public static final String HISTORY_FILE = "SudokuSolverHistory.txt";
+
     public static final int EMPTY_CELL = 0;
     public static final int TOTAL_ROW_CELLS = 9;
     public static final int TOTAL_COLUMN_CELLS = 9;

@@ -26,13 +26,13 @@ public class DancingLinks
     // the root header (used to keep track of the columns)
     private HeaderNode _root;
     // permanent reference to every column header
-    List<HeaderNode> _cols;
+    private List<HeaderNode> _cols;
     // permanent reference to the STARTING NODE of every row (in this case,
     // the node that represents the cell position)
     private List<Node> _rows;
 
     // the solution that is push'd and pop'd according to the backtracking algorithm
-    Stack<Node> _solutions = new Stack<Node>();
+    private Stack<Node> _solutions = new Stack<Node>();
 
     // member reference to the cells that need to be populated
     private int[] _cells;
@@ -430,9 +430,4 @@ public class DancingLinks
         public int count;
     }
 }
-
-
-
-
-
 
