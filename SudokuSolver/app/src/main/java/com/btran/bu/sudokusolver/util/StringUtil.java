@@ -5,7 +5,7 @@ package com.btran.bu.sudokusolver.util;
  */
 public class StringUtil
 {
-    private static final String LANDSCAPE_HEADER = "Input:\t\t\t\t\t\t\t\t\t\t\t\t\t\tOutput:\n";
+    private static final String LANDSCAPE_HEADER = "Input:\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tOutput:\n";
     private static final String PORTRAIT_INPUT_HEADER = "Input:\n";
     private static final String PORTRAIT_OUTPUT_HEADER = "Output:\n";
 
@@ -52,7 +52,7 @@ public class StringUtil
             retVal += getFormattedRow(input, row);
 
             // create separator between the input and output
-            retVal += "\t|\t";
+            retVal += "\t\t\t|\t\t\t";
 
             // display formatted row of output
             retVal += getFormattedRow(output, row);
@@ -108,7 +108,7 @@ public class StringUtil
             if (i > beginIndex)
             {
                 // insert tabs after the first item
-                retVal += "\t";
+                retVal += "\t\t\t";
             }
 
             // add dashes for empty cell items

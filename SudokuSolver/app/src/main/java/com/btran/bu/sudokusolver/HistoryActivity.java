@@ -23,6 +23,7 @@ public class HistoryActivity extends AppCompatActivity
 
         TextView _historyText = (TextView) findViewById(R.id.historyText);
         _historyText.setText(getHistory());
+        _historyText.setTextSize(22);
     }
 
     /**
