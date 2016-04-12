@@ -110,6 +110,7 @@ public class AnswerActivity extends AppCompatActivity
         // link the user to the Sudoku URL
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_URL));
         startActivity(browserIntent);
+        Log.i("Browsing", "Successfully opening URL in browser");
     }
 
     /**
