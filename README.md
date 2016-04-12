@@ -13,5 +13,7 @@ The following features will be provided for this Sudoku Solver:
 - Provide an output for the Sudoku board based on the input
 - Provide a submit button to trigger displaying the output
 - Provide a history screen that will show all previous inputs and outputs of Sudoku Boards
+- Provide a play button to allow the user to play more Sudoku games
+- Provide a share button to allow the user to send the answers through a messenger
 
 More features will be defined here as 
