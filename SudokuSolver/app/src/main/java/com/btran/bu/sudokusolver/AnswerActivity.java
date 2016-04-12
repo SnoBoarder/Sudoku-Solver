@@ -2,6 +2,7 @@ package com.btran.bu.sudokusolver;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,9 @@ import java.io.FileOutputStream;
 
 public class AnswerActivity extends AppCompatActivity
 {
+	// define the Sudoku board URL
+    private static final String PLAY_URL = "http://www.sudoku.com/";
+
     private DancingLinks _solver;
 
     private String _inputAndOutput;
@@ -60,13 +64,23 @@ public class AnswerActivity extends AppCompatActivity
         // store the input and output in portrait format in preparation for share functionality
         _inputAndOutput = StringUtil.createPortraitSudokuMessage(input, cells);
 
-        // add the submit button click listener, which will submit the sudoku board
+        // add the share button click listener, which share the answer
         Button shareButton = (Button) findViewById(R.id.shareButton);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("Sharing", "Clicked share button");
                 shareSudokuAnswer(v);
+            }
+        });
+
+        // add the play button click listener, which will send the user to the browser to play sudoku
+		Button playButton = (Button) findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Playing", "Clicked play button");
+                playSudoku(v);
             }
         });
     }
@@ -85,6 +99,17 @@ public class AnswerActivity extends AppCompatActivity
 
         // if applicable, create a chooser to allow the user to choose from several applications
         startActivity(Intent.createChooser(sendAnswer, getResources().getText(R.string.share_to)));
+    }
+
+    /**
+     * Link the browser URL for a sudoku game!
+     * @param v
+     */
+    private void playSudoku(View v)
+    {
+        // link the user to the Sudoku URL
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_URL));
+        startActivity(browserIntent);
     }
 
     /**
