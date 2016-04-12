@@ -1,13 +1,34 @@
 package com.btran.bu.sudokusolver.util;
 
 /**
- * This class handles formatting special strings for the Sudoku Boards
+ * This class handles formatting special strings for the Sudoku Boards.
+ * Its simplicity comes with the common formatting of all Sudoku Boards with getFormattedRow
+ *
+ * The following functions are available for utility:
+ *
+ * createPortraitSudokuMessage(int[] input, int[] output)
+ * createLandscapeSudokuMessage(int[] input, int[] output)
+ * createSudokuMessage(int[] cells)
  */
 public class StringUtil
 {
+    // define the formatting to set a string to a new line. this may change depending on formatting
+    private static final String NEW_LINE = "\n";
+
+    // define the header that represents the landscape orientation message
     private static final String LANDSCAPE_HEADER = "Input:\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tOutput:\n";
-    private static final String PORTRAIT_INPUT_HEADER = "Input:\n";
-    private static final String PORTRAIT_OUTPUT_HEADER = "Output:\n";
+    // define the separator that separates the input and output Sudoku boards
+    private static final String LANDSCAPE_SEPARATOR = "\t\t\t|\t\t\t";
+
+    // define the header that represents the portrait orientation input
+    private static final String PORTRAIT_INPUT_HEADER = "Input:" + NEW_LINE;
+    // define the header that represents the portrait orientation output
+    private static final String PORTRAIT_OUTPUT_HEADER = "Output:" + NEW_LINE;
+
+    // define the separator that separates each cell item
+    private static final String CELL_SEPARATOR = "\t\t";
+    // define the symbols that represnt an "empty" cell
+    private static final String CELL_EMPTY = "--";
 
     /**
      * Create a portrait representation of the input and output of the Sudoku Board
@@ -52,16 +73,16 @@ public class StringUtil
             retVal += getFormattedRow(input, row);
 
             // create separator between the input and output
-            retVal += "\t\t\t|\t\t\t";
+            retVal += LANDSCAPE_SEPARATOR;
 
             // display formatted row of output
             retVal += getFormattedRow(output, row);
 
             // go to the next line
-            retVal += "\n";
+            retVal += NEW_LINE;
         }
 
-        retVal += "\n";
+        retVal += NEW_LINE;
 
         return retVal;
     }
@@ -81,7 +102,7 @@ public class StringUtil
             retVal += getFormattedRow(cells, row);
 
             // go to the next line
-            retVal += "\n";
+            retVal += NEW_LINE;
         }
 
         return retVal;
@@ -109,12 +130,12 @@ public class StringUtil
             if (i > beginIndex)
             {
                 // insert tabs after the first item
-                retVal += "\t\t";
+                retVal += CELL_SEPARATOR;
             }
 
-            // add dashes for empty cell items
+            // add unique symbol for empty cell items
             int cell = input[i];
-            retVal += (cell == 0) ? "--" : cell;
+            retVal += (cell == SudokuUtil.EMPTY_CELL) ? CELL_EMPTY : cell;
         }
 
         return retVal;
