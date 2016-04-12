@@ -5,19 +5,22 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.btran.bu.sudokusolver.solver.DancingLinks;
+import com.btran.bu.sudokusolver.util.StringUtil;
 import com.btran.bu.sudokusolver.util.SudokuUtil;
 
 import java.io.FileOutputStream;
 
 public class AnswerActivity extends AppCompatActivity
 {
-    private static final String HISTORY_HEADER = "Input:\t\t\t\t\t\t\t\t\t\t\t\t\t\tOutput:\n";
-
     private DancingLinks _solver;
+
+    private String _inputAndOutput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -31,7 +34,7 @@ public class AnswerActivity extends AppCompatActivity
         Intent intent = getIntent();
         String[] cellData = intent.getStringArrayExtra(MainActivity.EXTRA_CELLS);
         TextView textView = new TextView(this);
-        textView.setTextSize(14);
+        textView.setTextSize(24);
 
         // convert cell data to an int array
 		int[] cells = new int[cellData.length];
@@ -47,28 +50,41 @@ public class AnswerActivity extends AppCompatActivity
         storeHistory(input, cells);
 
         // display the solution
-        textView.setText(getDisplayString(cells));
+        textView.setText(StringUtil.createSudokuMessage(cells));
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.answer);
         layout.addView(textView);
 
         Log.i("Construction", "Displaying Answer Activity");
+
+        // store the input and output in portrait format in preparation for share functionality
+        _inputAndOutput = StringUtil.createPortraitSudokuMessage(input, cells);
+
+        // add the submit button click listener, which will submit the sudoku board
+        Button shareButton = (Button) findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Sharing", "Clicked share button");
+                shareSudokuAnswer(v);
+            }
+        });
     }
 
-    private String getDisplayString(int[] cells)
+    /**
+     * Share the Sudoku Answer with an available application
+     *
+     * @param v
+     */
+    private void shareSudokuAnswer(View v)
     {
-        String retVal = "";
-        for (int i = 0; i < cells.length; ++i)
-        {
-            if (i % SudokuUtil.TOTAL_COLUMN_CELLS == 0)
-                retVal += "\n";
+        // create an ACTION_SEND intent that is provided the input and output of the Sudoku Board
+        Intent sendAnswer = new Intent(Intent.ACTION_SEND);
+        sendAnswer.putExtra(Intent.EXTRA_TEXT, _inputAndOutput);
+        sendAnswer.setType("text/plain");
 
-            retVal += " " + cells[i];
-
-            retVal += "\t";
-        }
-
-        return retVal;
+        // if applicable, create a chooser to allow the user to choose from several applications
+        startActivity(Intent.createChooser(sendAnswer, getResources().getText(R.string.share_to)));
     }
 
     /**
@@ -80,66 +96,16 @@ public class AnswerActivity extends AppCompatActivity
     private void storeHistory(int[] input, int[] output)
     {
         // create formatted string
-        String appendString = HISTORY_HEADER;
-
-        // create the input and output format for the text file
-        for (int row = 0; row < SudokuUtil.TOTAL_ROW_CELLS; ++row)
-        {
-            // display formatted row of input
-            appendString += getFormattedRow(input, row);
-
-            // create separator between the input and output
-            appendString += "\t|\t";
-
-            // display formatted row of output
-            appendString += getFormattedRow(output, row);
-
-            // go to the next line
-            appendString += "\n";
-        }
-
-        appendString += "\n";
+        String historyInputOutput = StringUtil.createLandscapeSudokuMessage(input, output);
 
         // TODO: Consider using XML data instead of pure text.
         try
         {
             FileOutputStream fos = openFileOutput(SudokuUtil.HISTORY_FILE, Context.MODE_APPEND);
-            fos.write(appendString.getBytes());
+            fos.write(historyInputOutput.getBytes());
         }
         catch (Exception e) {
             Log.i("Appending Fail", "Failed to append to History File.");
         }
-    }
-
-    /**
-     * Get the formatted row of a provided Sudoku board
-     *
-     * @param input Sudoku Board
-     * @param row The row we want from the Sudoku board
-     * @return Formatted row
-     */
-    private String getFormattedRow(int[] input, int row)
-    {
-        // get the first index of the row
-        int beginIndex = SudokuUtil.getIndex(row, 0);
-        // get the last index of the row
-        int lastIndex = SudokuUtil.getIndex(row, SudokuUtil.TOTAL_COLUMN_CELLS);
-
-        String retVal = "";
-        // traverse the indices and format the row string
-        for (int i = beginIndex; i < lastIndex; ++i)
-        {
-            if (i > beginIndex)
-            {
-                // insert tabs after the first item
-                retVal += "\t";
-            }
-
-            // add dashes for empty cell items
-            int cell = input[i];
-            retVal += (cell == 0) ? "--" : cell;
-        }
-
-        return retVal;
     }
 }

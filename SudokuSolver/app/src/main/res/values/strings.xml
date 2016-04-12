@@ -7,4 +7,6 @@
     <string name="settings_positive_button">OK</string>
     <string name="answer_title">Answer</string>
     <string name="history_title">History</string>
+    <string name="share_button">Share</string>
+    <string name="share_to">Share answer to:</string>
 </resources>
