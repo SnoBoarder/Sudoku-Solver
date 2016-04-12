@@ -98,6 +98,7 @@ public class StringUtil
     {
         // get the first index of the row
         int beginIndex = SudokuUtil.getIndex(row, 0);
+
         // get the last index of the row
         int lastIndex = SudokuUtil.getIndex(row, SudokuUtil.TOTAL_COLUMN_CELLS);
 
@@ -108,7 +109,7 @@ public class StringUtil
             if (i > beginIndex)
             {
                 // insert tabs after the first item
-                retVal += "\t\t\t";
+                retVal += "\t\t";
             }
 
             // add dashes for empty cell items
