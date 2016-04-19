@@ -1,8 +1,12 @@
 package com.btran.bu.sudokusolver;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.btran.bu.sudokusolver.solver.DancingLinks;
 import com.btran.bu.sudokusolver.util.StringUtil;
@@ -21,6 +26,9 @@ public class AnswerActivity extends AppCompatActivity
 {
 	// define the Sudoku board URL
     private static final String PLAY_URL = "http://www.sudoku.com/";
+
+    private ConnectivityManager _connectivityManager;
+    private NetworkInfo _networkInfo;
 
     private DancingLinks _solver;
 
@@ -83,6 +91,10 @@ public class AnswerActivity extends AppCompatActivity
                 playSudoku(v);
             }
         });
+
+        // get connectivity manager and network info to confirm that the user has internet
+        _connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        _networkInfo = _connectivityManager.getActiveNetworkInfo();
     }
 
     /**
@@ -107,10 +119,21 @@ public class AnswerActivity extends AppCompatActivity
      */
     private void playSudoku(View v)
     {
-        // link the user to the Sudoku URL
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_URL));
-        startActivity(browserIntent);
-        Log.i("Browsing", "Successfully opening URL in browser");
+        boolean hasInternet = _networkInfo != null && _networkInfo.isConnectedOrConnecting();
+
+        if (hasInternet)
+        {
+            // link the user to the Sudoku URL
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_URL));
+            startActivity(browserIntent);
+            Log.i("Browsing", "Successfully opening URL in browser");
+
+            Toast.makeText(AnswerActivity.this, "You have Internet! Enjoy your Sudoku Game!", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(AnswerActivity.this, "You don't have Internet. Try playing Sudoku later.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
