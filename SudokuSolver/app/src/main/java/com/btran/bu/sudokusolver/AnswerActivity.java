@@ -115,7 +115,7 @@ public class AnswerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("Calling", "Clicked call button");
-                callSudoku();
+                callSudokuSupport();
             }
         });
 
@@ -159,38 +159,44 @@ public class AnswerActivity extends AppCompatActivity {
     }
 
     /**
-     * Call Sudoku
+     * Call the Sudoku Support Team
      */
-    private void callSudoku()
+    private void callSudokuSupport()
     {
+        // Verify that the application has permission to access the user's phone service
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
         {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    PERMISSIONS_REQUEST_CALL_PHONE);
-            return;
+            // The application does not have permission
+            // Create a Request for Permission and asynchronously wait for the response
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, PERMISSIONS_REQUEST_CALL_PHONE);
         }
         else
         {
+            // Permissions have been accepted by the user. Call Sudoku Support immediately
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + PHONE_NUMBER));
             startActivity(intent);
         }
     }
 
+    /**
+     * This function is required to handle all asynchronous callbacks that refer to permissions.
+     *
+     * In this case, we are handling the permission request to using the "CALL_PHONE" service.
+     *
+     * @param requestCode the permission request code that needs to be handled
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
     {
         switch (requestCode)
         {
             case PERMISSIONS_REQUEST_CALL_PHONE:
-                callSudoku();
+                // we have received permissions to use the CALL_PHONE feature
+                // call the function again to initiate the call (this needs to
+                // happen to make sure checkSelfPermission() validates the permissions)
+                callSudokuSupport();
                 break;
         }
     }
