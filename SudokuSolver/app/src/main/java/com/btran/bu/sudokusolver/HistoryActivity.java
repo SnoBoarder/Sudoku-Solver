@@ -1,5 +1,7 @@
 package com.btran.bu.sudokusolver;
 
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ScrollView;
@@ -24,6 +26,11 @@ public class HistoryActivity extends AppCompatActivity
         TextView _historyText = (TextView) findViewById(R.id.historyText);
         _historyText.setText(getHistory());
         _historyText.setTextSize(22);
+
+        BitmapDrawable bitmap = (BitmapDrawable) getDrawable(R.drawable.history_background);
+        bitmap.setTileModeX(Shader.TileMode.CLAMP);
+        bitmap.setTileModeY(Shader.TileMode.REPEAT);
+        _historyText.setBackground(bitmap);
     }
 
     /**
