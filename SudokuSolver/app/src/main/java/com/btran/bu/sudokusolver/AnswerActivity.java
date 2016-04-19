@@ -46,7 +46,15 @@ public class AnswerActivity extends AppCompatActivity
         Intent intent = getIntent();
         String[] cellData = intent.getStringArrayExtra(MainActivity.EXTRA_CELLS);
         TextView textView = new TextView(this);
-        textView.setTextSize(24);
+        textView.setTextSize(30);
+
+        RelativeLayout.LayoutParams layoutParams =
+                new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        textView.setLayoutParams(layoutParams);
+        textView.setBackground(getDrawable(R.drawable.answer_background));
 
         // convert cell data to an int array
 		int[] cells = new int[cellData.length];
