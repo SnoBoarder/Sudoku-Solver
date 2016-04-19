@@ -88,26 +88,6 @@ public class MainActivity extends ActionBarActivity
                 submitSudokuBoard(v);
             }
         });
-
-        // add the history button click listener
-        Button historyButton = (Button) findViewById(R.id.historyButton);
-        historyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("History", "Clicked history button");
-                startActivity(new Intent(v.getContext(), HistoryActivity.class));
-            }
-        });
-
-        // test button to generate a sudoku board for testing
-        Button generateButton = (Button) findViewById(R.id.generateButton);
-        generateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("Generating", "Clicked generate button");
-                generateSudokuBoard(v);
-            }
-        });
     }
 
     /**
@@ -141,6 +121,14 @@ public class MainActivity extends ActionBarActivity
                 // show settings fragment
                 DialogFragment newFragment = new SettingsDialogFragment();
                 newFragment.show(getFragmentManager(), "settings");
+                return true;
+            case R.id.options_history:
+                Log.i("History", "Clicked history button");
+                startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+                return true;
+            case R.id.options_generate:
+                Log.i("Generating", "Clicked generate button");
+                generateSudokuBoard();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -196,10 +184,8 @@ public class MainActivity extends ActionBarActivity
      * Generate a sample Sudoku Board for testing
      *
      * This is a temporary button purely for testing.
-     *
-     * @param view
      */
-    private void generateSudokuBoard(View view)
+    private void generateSudokuBoard()
     {
         int[] cells = SudokuUtil.getRandomBoard();
 

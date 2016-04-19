@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.btran.bu.sudokusolver.MainActivity">
     <item
+        android:id="@+id/options_history"
+        android:title="History" />
+    <item
+        android:id="@+id/options_generate"
+        android:title="Generate Board" />
+    <item
         android:id="@+id/options_about"
         android:title="@string/options_about" />
 </menu>
