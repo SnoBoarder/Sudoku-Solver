@@ -12,4 +12,5 @@
     <string name="share_to">Share answer to:</string>
     <string name="play_game">Play!</string>
     <string name="no_answer">No answer was found. Try again!</string>
+    <string name="call_sudoku">Call Sudoku\nSupport</string>
 </resources>

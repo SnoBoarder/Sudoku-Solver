@@ -3,6 +3,7 @@ package com.btran.bu.sudokusolver;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -22,10 +23,12 @@ import com.btran.bu.sudokusolver.util.SudokuUtil;
 
 import java.io.FileOutputStream;
 
-public class AnswerActivity extends AppCompatActivity
-{
-	// define the Sudoku board URL
+public class AnswerActivity extends AppCompatActivity {
+    // define the Sudoku board URL
     private static final String PLAY_URL = "http://www.sudoku.com/";
+    private static final String PHONE_NUMBER = "1234567890";
+
+    private static final int PERMISSIONS_REQUEST_CALL_PHONE = 123;
 
     private ConnectivityManager _connectivityManager;
     private NetworkInfo _networkInfo;
@@ -35,8 +38,7 @@ public class AnswerActivity extends AppCompatActivity
     private String _inputAndOutput;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer);
 
@@ -56,8 +58,7 @@ public class AnswerActivity extends AppCompatActivity
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         textView.setLayoutParams(layoutParams);
 
-        if (!isEmpty)
-        {
+        if (!isEmpty) {
             textView.setBackground(getDrawable(R.drawable.answer_background));
 
             // convert cell data to an int array
@@ -78,9 +79,7 @@ public class AnswerActivity extends AppCompatActivity
 
             // store the input and output in portrait format in preparation for share functionality
             _inputAndOutput = StringUtil.createPortraitSudokuMessage(input, cells);
-        }
-        else
-        {
+        } else {
             // state that there is no answer
             textView.setText(getResources().getString(R.string.no_answer));
         }
@@ -101,12 +100,22 @@ public class AnswerActivity extends AppCompatActivity
         });
 
         // add the play button click listener, which will send the user to the browser to play sudoku
-		Button playButton = (Button) findViewById(R.id.playButton);
+        Button playButton = (Button) findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("Playing", "Clicked play button");
                 playSudoku(v);
+            }
+        });
+
+        // add the play button click listener, which will send the user to the browser to play sudoku
+        Button callButton = (Button) findViewById(R.id.callButton);
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Calling", "Clicked call button");
+                callSudoku();
             }
         });
 
@@ -120,8 +129,7 @@ public class AnswerActivity extends AppCompatActivity
      *
      * @param v
      */
-    private void shareSudokuAnswer(View v)
-    {
+    private void shareSudokuAnswer(View v) {
         // create an ACTION_SEND intent that is provided the input and output of the Sudoku Board
         Intent sendAnswer = new Intent(Intent.ACTION_SEND);
         sendAnswer.putExtra(Intent.EXTRA_TEXT, _inputAndOutput);
@@ -135,22 +143,55 @@ public class AnswerActivity extends AppCompatActivity
      * Link the browser URL for a sudoku game!
      * @param v
      */
-    private void playSudoku(View v)
-    {
+    private void playSudoku(View v) {
         boolean hasInternet = _networkInfo != null && _networkInfo.isConnectedOrConnecting();
 
-        if (hasInternet)
-        {
+        if (hasInternet) {
             // link the user to the Sudoku URL
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_URL));
             startActivity(browserIntent);
             Log.i("Browsing", "Successfully opening URL in browser");
 
             Toast.makeText(AnswerActivity.this, "You have Internet! Enjoy your Sudoku Game!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(AnswerActivity.this, "You don't have Internet. Try playing Sudoku later.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Call Sudoku
+     */
+    private void callSudoku()
+    {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    PERMISSIONS_REQUEST_CALL_PHONE);
+            return;
         }
         else
         {
-            Toast.makeText(AnswerActivity.this, "You don't have Internet. Try playing Sudoku later.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + PHONE_NUMBER));
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        switch (requestCode)
+        {
+            case PERMISSIONS_REQUEST_CALL_PHONE:
+                callSudoku();
+                break;
         }
     }
 
