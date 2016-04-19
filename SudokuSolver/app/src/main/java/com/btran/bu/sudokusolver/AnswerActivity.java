@@ -28,10 +28,9 @@ public class AnswerActivity extends AppCompatActivity {
     private static final String PLAY_URL = "http://www.sudoku.com/";
     private static final String PHONE_NUMBER = "1234567890";
 
-    private static final int PERMISSIONS_REQUEST_CALL_PHONE = 123;
-
-    private ConnectivityManager _connectivityManager;
-    private NetworkInfo _networkInfo;
+    private static final int PERMISSIONS_REQUEST_CALL_PHONE = 1;
+    private static final int PERMISSIONS_REQUEST_INTERNET = 2;
+    private static final int PERMISSIONS_REQUEST_ACCESS_NETWORK_STATE = 3;
 
     private DancingLinks _solver;
 
@@ -105,7 +104,7 @@ public class AnswerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("Playing", "Clicked play button");
-                playSudoku(v);
+                playSudoku();
             }
         });
 
@@ -119,9 +118,7 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
 
-        // get connectivity manager and network info to confirm that the user has internet
-        _connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        _networkInfo = _connectivityManager.getActiveNetworkInfo();
+
     }
 
     /**
@@ -140,21 +137,39 @@ public class AnswerActivity extends AppCompatActivity {
     }
 
     /**
-     * Link the browser URL for a sudoku game!
-     * @param v
+     * Link the browser URL for a Sudoku game!
      */
-    private void playSudoku(View v) {
-        boolean hasInternet = _networkInfo != null && _networkInfo.isConnectedOrConnecting();
+    private void playSudoku() {
+        // Verify that the application has permission to access the user's internet
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED)
+        {
+            // The application does not have permission
+            // Create a Request for Permission and asynchronously wait for the response
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, PERMISSIONS_REQUEST_INTERNET);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, PERMISSIONS_REQUEST_ACCESS_NETWORK_STATE);
+            Log.i("Permissions", "Requesting permissions to access \"INTERNET\" and \"ACCESS_NETWORK_STATE\"functionality");
+            return;
+        }
+
+        // get connectivity manager and network info to confirm that the user has internet
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        boolean hasInternet = networkInfo != null && networkInfo.isConnectedOrConnecting();
 
         if (hasInternet) {
             // link the user to the Sudoku URL
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_URL));
             startActivity(browserIntent);
-            Log.i("Browsing", "Successfully opening URL in browser");
 
             Toast.makeText(AnswerActivity.this, "You have Internet! Enjoy your Sudoku Game!", Toast.LENGTH_SHORT).show();
+
+            Log.i("Browsing", "User has internet. Success.");
         } else {
             Toast.makeText(AnswerActivity.this, "You don't have Internet. Try playing Sudoku later.", Toast.LENGTH_SHORT).show();
+
+            Log.i("Browsing", "User has no internet. Fail.");
         }
     }
 
@@ -169,12 +184,16 @@ public class AnswerActivity extends AppCompatActivity {
             // The application does not have permission
             // Create a Request for Permission and asynchronously wait for the response
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, PERMISSIONS_REQUEST_CALL_PHONE);
+
+            Log.i("Permissions", "Requesting permissions to access \"CALL_PHONE\" functionality");
         }
         else
         {
             // Permissions have been accepted by the user. Call Sudoku Support immediately
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + PHONE_NUMBER));
             startActivity(intent);
+
+            Log.i("Calling", "Successfully calling Sudoku Support");
         }
     }
 
@@ -197,6 +216,13 @@ public class AnswerActivity extends AppCompatActivity {
                 // call the function again to initiate the call (this needs to
                 // happen to make sure checkSelfPermission() validates the permissions)
                 callSudokuSupport();
+                break;
+            case PERMISSIONS_REQUEST_INTERNET:
+            case PERMISSIONS_REQUEST_ACCESS_NETWORK_STATE:
+                // we have received permissions to use the INTERNET and ACCESS_NETWORK_STATE features
+                // call the function again to initiate the play functionality (this needs to
+                // happen to make sure checkSelfPermission() validates the permissions)
+                playSudoku();
                 break;
         }
     }
