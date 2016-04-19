@@ -1,12 +1,19 @@
 package com.btran.bu.sudokusolver.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridLayout.LayoutParams;
+
+import com.btran.bu.sudokusolver.R;
+import com.btran.bu.sudokusolver.util.SudokuUtil;
 
 /**
  * The Cell class encapsulates the formatting and layout parameters of a Sudoku Cell, allowing
@@ -25,6 +32,7 @@ public class Cell
                     new InputFilter.LengthFilter(MAX_LENGTH)
             };
     private static final boolean SINGLE_LINE_ENABLED = true;
+    private static final int TEXT_PIXEL_WIDTH = 110;
 
     private EditText _text;
 
@@ -42,6 +50,7 @@ public class Cell
         _text.setInputType(InputType.TYPE_NUMBER_FLAG_SIGNED);
         _text.setKeyListener(DigitsKeyListener.getInstance(KEY_LISTENERS));
         _text.setFilters(inputFilters);
+        _text.setWidth(TEXT_PIXEL_WIDTH);
     }
 
     /**

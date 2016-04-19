@@ -41,10 +41,13 @@ public class MainActivity extends ActionBarActivity
         {
             Log.i("Saved Instance", "Reset board");
 
-            // clear the cell inputs
-            for (int i = 0; i < _cells.length; ++i)
+            if (_cells != null)
             {
-                _cells[i].reset();
+                // clear the cell inputs
+                for (int i = 0; i < _cells.length; ++i)
+                {
+                    _cells[i].reset();
+                }
             }
         }
     }
@@ -57,6 +60,7 @@ public class MainActivity extends ActionBarActivity
         Log.i("Initialize", "Initialize Sudoku Board");
 
         GridLayout gridLayout = (GridLayout) findViewById(R.id.cellGrid);
+        gridLayout.setBackground(getDrawable(R.drawable.sudoku_background));
         gridLayout.setRowCount(SudokuUtil.TOTAL_ROW_CELLS);
         gridLayout.setColumnCount(SudokuUtil.TOTAL_COLUMN_CELLS);
 
