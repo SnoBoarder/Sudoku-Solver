@@ -23,7 +23,7 @@ public class StringUtil
     // define the header that represents the portrait orientation input
     private static final String PORTRAIT_INPUT_HEADER = "Input:" + NEW_LINE;
     // define the header that represents the portrait orientation output
-    private static final String PORTRAIT_OUTPUT_HEADER = "Output:" + NEW_LINE;
+    private static final String PORTRAIT_OUTPUT_HEADER = "\nOutput:" + NEW_LINE;
 
     // define the separator that separates each cell item
     private static final String CELL_SEPARATOR = "\t\t";
@@ -102,7 +102,8 @@ public class StringUtil
             retVal += getFormattedRow(cells, row);
 
             // go to the next line
-            retVal += NEW_LINE;
+            if (row + 1 < SudokuUtil.TOTAL_ROW_CELLS)
+                retVal += NEW_LINE;
         }
 
         return retVal;
