@@ -18,6 +18,7 @@ import com.btran.bu.sudokusolver.widget.Cell;
 public class MainActivity extends ActionBarActivity
 {
     public final static String EXTRA_CELLS = "com.btran.bu.sudokusolver.CELLS";
+    public final static String EXTRA_EMPTY_CHECK = "com.btran.bu.sudokusolver.EMPTY_CHECK";
 
     private Cell[] _cells;
 
@@ -43,11 +44,7 @@ public class MainActivity extends ActionBarActivity
 
             if (_cells != null)
             {
-                // clear the cell inputs
-                for (int i = 0; i < _cells.length; ++i)
-                {
-                    _cells[i].reset();
-                }
+                resetSudokuBoard();
             }
         }
     }
@@ -86,6 +83,16 @@ public class MainActivity extends ActionBarActivity
             public void onClick(View v) {
                 Log.i("Submitting", "Clicked submit button");
                 submitSudokuBoard(v);
+            }
+        });
+
+        // add the reset button click listener, which will reset the sudoku board
+        Button resetButton = (Button) findViewById(R.id.resetButton);
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Submitting", "Clicked submit button");
+                resetSudokuBoard();
             }
         });
     }
@@ -136,14 +143,25 @@ public class MainActivity extends ActionBarActivity
     }
 
     /**
+     * Reset the Sudoku Board.
+     */
+    private void resetSudokuBoard()
+    {
+        // clear the cell inputs
+        for (int i = 0; i < _cells.length; ++i)
+        {
+            _cells[i].reset();
+        }
+    }
+
+    /**
      * Send the Sudoku Board to the Answer Activity.
      *
      * @param view
      */
     private void submitSudokuBoard(View view)
     {
-        // Prepare the intent to the AnswerActivity
-        Intent intent = new Intent(this, AnswerActivity.class);
+        boolean isEmpty = true;
 
         // aggregate all the cell data
         String[] cells = new String[SudokuUtil.TOTAL_CELL_INPUTS];
@@ -151,13 +169,29 @@ public class MainActivity extends ActionBarActivity
         {
             // extract the cell value from the EditText and store it
             String cell = _cells[i].getValue();
-            cells[i] = cell.isEmpty() ? "0" : cell; // set "0" for empty cells
+
+            if (cell.isEmpty())
+            {
+                // set "0" for empty cells
+                cells[i] = "0";
+            }
+            else
+            {
+                if (isEmpty)
+                    isEmpty = false;
+
+                cells[i] = cell;
+            }
         }
 
         logInputSudokuBoard(cells);
 
+        // Prepare the intent to the AnswerActivity
+        Intent intent = new Intent(this, AnswerActivity.class);
+
         // pass the cell data with the intent
         intent.putExtra(EXTRA_CELLS, cells);
+        intent.putExtra(EXTRA_EMPTY_CHECK, isEmpty);
 
         startActivity(intent);
     }

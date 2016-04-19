@@ -45,6 +45,7 @@ public class AnswerActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         String[] cellData = intent.getStringArrayExtra(MainActivity.EXTRA_CELLS);
+        boolean isEmpty = intent.getBooleanExtra(MainActivity.EXTRA_EMPTY_CHECK, false);
         TextView textView = new TextView(this);
         textView.setTextSize(30);
 
@@ -54,31 +55,40 @@ public class AnswerActivity extends AppCompatActivity
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         textView.setLayoutParams(layoutParams);
-        textView.setBackground(getDrawable(R.drawable.answer_background));
 
-        // convert cell data to an int array
-		int[] cells = new int[cellData.length];
-        SudokuUtil.convertToIntArray(cellData, cells);
+        if (!isEmpty)
+        {
+            textView.setBackground(getDrawable(R.drawable.answer_background));
 
-        // get the solution and populate it to the passed in cells array
-		_solver = new DancingLinks();
-        _solver.loadAndSearch(cells);
+            // convert cell data to an int array
+            int[] cells = new int[cellData.length];
+            SudokuUtil.convertToIntArray(cellData, cells);
 
-        // store input and output into history file
-        int[] input = new int[cellData.length];
-        SudokuUtil.convertToIntArray(cellData, input);
-        storeHistory(input, cells);
+            // get the solution and populate it to the passed in cells array
+            _solver = new DancingLinks();
+            _solver.loadAndSearch(cells);
 
-        // display the solution
-        textView.setText(StringUtil.createSudokuMessage(cells));
+            // store input and output into history file
+            int[] input = new int[cellData.length];
+            SudokuUtil.convertToIntArray(cellData, input);
+            storeHistory(input, cells);
+
+            // display the solution
+            textView.setText(StringUtil.createSudokuMessage(cells));
+
+            // store the input and output in portrait format in preparation for share functionality
+            _inputAndOutput = StringUtil.createPortraitSudokuMessage(input, cells);
+        }
+        else
+        {
+            // state that there is no answer
+            textView.setText(getResources().getString(R.string.no_answer));
+        }
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.answer);
         layout.addView(textView);
 
         Log.i("Construction", "Displaying Answer Activity");
-
-        // store the input and output in portrait format in preparation for share functionality
-        _inputAndOutput = StringUtil.createPortraitSudokuMessage(input, cells);
 
         // add the share button click listener, which share the answer
         Button shareButton = (Button) findViewById(R.id.shareButton);
