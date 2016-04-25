@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 
 import com.btran.bu.sudokusolver.fragment.SettingsDialogFragment;
+import com.btran.bu.sudokusolver.promotionAlarm.AlarmService;
 import com.btran.bu.sudokusolver.util.SudokuUtil;
 import com.btran.bu.sudokusolver.widget.Cell;
 
@@ -19,6 +20,8 @@ public class MainActivity extends ActionBarActivity
 {
     public final static String EXTRA_CELLS = "com.btran.bu.sudokusolver.CELLS";
     public final static String EXTRA_EMPTY_CHECK = "com.btran.bu.sudokusolver.EMPTY_CHECK";
+
+    private final static int NOTIFICATION_DELAY = 1000;
 
     private Cell[] _cells;
 
@@ -47,6 +50,14 @@ public class MainActivity extends ActionBarActivity
                 resetSudokuBoard();
             }
         }
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+
+        new AlarmService(this).startAlarm(NOTIFICATION_DELAY);
     }
 
     /**

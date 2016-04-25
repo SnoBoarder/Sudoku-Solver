@@ -13,4 +13,6 @@
     <string name="play_game">Play!</string>
     <string name="no_answer">No answer was found. Try again!</string>
     <string name="call_sudoku">Call Sudoku\nSupport</string>
+    <string name="notification_title">We miss you!</string>
+    <string name="notification_body">Come back and solve more Sudoku Boards!</string>
 </resources>
