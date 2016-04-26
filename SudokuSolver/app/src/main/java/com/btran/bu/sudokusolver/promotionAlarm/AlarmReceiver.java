@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 
 import com.btran.bu.sudokusolver.MainActivity;
 import com.btran.bu.sudokusolver.R;
@@ -39,5 +40,8 @@ public class AlarmReceiver extends BroadcastReceiver
 
         // trigger the notification
         notificationManager.notify(COME_BACK_NOTIFICATION_ID, notificationBuilder.build());
+
+        Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+        vibrator.vibrate(1000);
     }
 }
