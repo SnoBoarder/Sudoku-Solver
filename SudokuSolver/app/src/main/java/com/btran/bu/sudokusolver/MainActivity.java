@@ -1,6 +1,8 @@
 package com.btran.bu.sudokusolver;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -58,6 +60,36 @@ public class MainActivity extends ActionBarActivity
         super.onStop();
 
         new AlarmService(this).startAlarm(NOTIFICATION_DELAY);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        alertDialogBuilder
+                .setTitle("Exit Sudoku Solver?")
+                .setMessage("Are you sure you want to exit Sudoku Solver?")
+                .setCancelable(false)
+                .setNegativeButton("Return",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }
+                )
+                .setPositiveButton("Exit",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                System.exit(0);
+                            }
+                        }
+                );
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     /**
