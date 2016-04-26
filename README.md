@@ -15,5 +15,6 @@ The following features will be provided for this Sudoku Solver:
 - Provide a history screen that will show all previous inputs and outputs of Sudoku Boards
 - Provide a play button to allow the user to play more Sudoku games
 - Provide a share button to allow the user to send the answers through a messenger
-
-More features will be defined here as 
+- Provide a notification to nicely ask the user to return to the application
+- Provide a splash screen, introducing the brand
+- Provide a an alert before 
