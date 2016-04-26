@@ -16,9 +16,15 @@ public class AlarmService
     public AlarmService(Context context)
     {
         _context = context;
+        // create the pending intent, which simply triggers the AlarmReceiver intent
         _alarmSender = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class), 0);
     }
 
+    /**
+     * Start the alarm to trigger the notification
+     *
+     * @param delayMillis the amount of time to wait until triggering the notification
+     */
     public void startAlarm(int delayMillis)
     {
         // Schedule the alarm!

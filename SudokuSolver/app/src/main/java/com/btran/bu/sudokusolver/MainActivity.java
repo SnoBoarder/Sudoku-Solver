@@ -58,20 +58,23 @@ public class MainActivity extends ActionBarActivity
     protected void onStop()
     {
         super.onStop();
-
-        new AlarmService(this).startAlarm(NOTIFICATION_DELAY);
     }
 
     @Override
     public void onBackPressed()
     {
+        // create new alert dialog builder
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         alertDialogBuilder
-                .setTitle("Exit Sudoku Solver?")
-                .setMessage("Are you sure you want to exit Sudoku Solver?")
+                // set title of dialog
+                .setTitle(getString(R.string.alert_title))
+                // set message of dialog
+                .setMessage(getString(R.string.alert_message))
+                // disable ability to cancel
                 .setCancelable(false)
-                .setNegativeButton("Return",
+                // define the negative button scenario, which simply cancels the dialog
+                .setNegativeButton(getString(R.string.alert_neg_button),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -79,15 +82,18 @@ public class MainActivity extends ActionBarActivity
                             }
                         }
                 )
-                .setPositiveButton("Exit",
+                // define the positive button scenario, which closes the application
+                .setPositiveButton(getString(R.string.alert_pos_button),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                new AlarmService(getApplicationContext()).startAlarm(NOTIFICATION_DELAY);
                                 System.exit(0);
                             }
                         }
                 );
 
+        // create the dialog and then show
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }

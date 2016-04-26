@@ -15,4 +15,8 @@
     <string name="call_sudoku">Call Sudoku\nSupport</string>
     <string name="notification_title">We miss you!</string>
     <string name="notification_body">Come back and solve more Sudoku Boards!</string>
+    <string name="alert_title">Exit the Sudoku Solver?</string>
+    <string name="alert_message">Are you sure you want to exit Sudoku Solver?</string>
+    <string name="alert_neg_button">Return</string>
+    <string name="alert_pos_button">Exit</string>
 </resources>

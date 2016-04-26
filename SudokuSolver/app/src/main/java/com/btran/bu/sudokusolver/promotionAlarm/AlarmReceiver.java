@@ -17,6 +17,7 @@ import com.btran.bu.sudokusolver.R;
 public class AlarmReceiver extends BroadcastReceiver
 {
     private static final int COME_BACK_NOTIFICATION_ID = 001;
+    private static final int VIBRATOR_DURATION = 1000;
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -41,7 +42,8 @@ public class AlarmReceiver extends BroadcastReceiver
         // trigger the notification
         notificationManager.notify(COME_BACK_NOTIFICATION_ID, notificationBuilder.build());
 
+        // trigger the vibration
         Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
-        vibrator.vibrate(1000);
+        vibrator.vibrate(VIBRATOR_DURATION);
     }
 }
